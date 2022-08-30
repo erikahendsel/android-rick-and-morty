@@ -7,5 +7,5 @@ import com.erikahendsel.rickandmorty.network.ApiService
 //class serves as mediator between the 2 sources ans knows where to get the data from so that the ViewModel
 //is solely responsible for making the data available for the view to observe
 class Repository(private val apiService: ApiService) {
-    suspend fun getCharacters(page: String) = apiService.fetchCharacters(page)
+    suspend fun getCharacters(page: String) = apiService.fetchAllCharacters(page)
 }

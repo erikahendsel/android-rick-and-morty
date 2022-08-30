@@ -13,7 +13,7 @@ data class Character(
     val gender: String
 )
 
-data class CharacterResponse(
+data class AllCharactersResponse(
     @Json(name = "results")
     val result: List<Character>
 )

@@ -9,30 +9,28 @@ import androidx.recyclerview.widget.RecyclerView
 import com.erikahendsel.rickandmorty.network.Character
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.erikahendsel.rickandmorty.databinding.RvItemBinding
 
-class MainAdapter(val charactersList: List<Character>) :
+class MainAdapter(private val charactersList: List<Character>) :
     RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
-    inner class MainViewHolder(private val itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindData(character: Character) {
-            val name = itemView.findViewById<TextView>(R.id.tvName)
-            val image = itemView.findViewById<ImageView>(R.id.ivImage)
-            val genderSpecies = itemView.findViewById<TextView>(R.id.tvGenderSpecies)
-
-            name.text = character.name
-            image.load(character.image)
-            genderSpecies.text = "${character.gender} ${character.species}"
-        }
-    }
+    inner class MainViewHolder(val binding: RvItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.rv_item, parent, false)
+            RvItemBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
         )
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.bindData(charactersList[position])
+        holder.binding.apply {
+            val character = charactersList[position]
+            tvName.text = character.name
+            ivImage.load(character.image)
+            tvGenderSpecies.text =  "${character.gender} ${character.species}"
+        }
     }
 
     override fun getItemCount(): Int {

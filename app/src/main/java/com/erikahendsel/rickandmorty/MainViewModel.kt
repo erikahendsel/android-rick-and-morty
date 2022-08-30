@@ -6,10 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.erikahendsel.rickandmorty.network.ApiClient
-import com.erikahendsel.rickandmorty.network.CharacterResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import com.erikahendsel.rickandmorty.network.Character
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -1,19 +1,13 @@
 package com.erikahendsel.rickandmorty
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.erikahendsel.rickandmorty.databinding.ActivityMainBinding
-import com.erikahendsel.rickandmorty.network.ApiClient
 import com.erikahendsel.rickandmorty.network.Character
-import com.erikahendsel.rickandmorty.network.CharacterResponse
 import com.google.android.material.snackbar.Snackbar
-import retrofit2.Response
 
 const val TAG = "MainActivity"
 
@@ -37,17 +31,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun processCharactersResponse(state: ScreenState<List<Character>?>) {
 
-        val pb = findViewById<ProgressBar>(R.id.progressBar)
-
         when (state) {
             is ScreenState.Loading -> {
-                pb.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.VISIBLE
             }
             is ScreenState.Success -> {
-                pb.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
                 if(state.data != null) {
                     val adapter = MainAdapter(state.data)
-                    val recyclerView = findViewById<RecyclerView>(R.id.rvAllCharacters)
+                    val recyclerView = binding.rvAllCharacters
                     recyclerView?.layoutManager =
                         StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
                     recyclerView?.adapter = adapter
@@ -55,8 +47,8 @@ class MainActivity : AppCompatActivity() {
 
             }
             is ScreenState.Error -> {
-                pb.visibility = View.GONE
-                val view = pb.rootView
+                binding.progressBar.visibility = View.GONE
+                val view = binding.progressBar.rootView
                 Snackbar.make(view, state.message!!,Snackbar.LENGTH_LONG).show()
             }
         }
