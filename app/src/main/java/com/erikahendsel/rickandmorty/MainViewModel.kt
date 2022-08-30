@@ -4,12 +4,15 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.erikahendsel.rickandmorty.network.ApiClient
 import com.erikahendsel.rickandmorty.network.CharacterResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import com.erikahendsel.rickandmorty.network.Character
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: Repository = Repository(ApiClient.apiService)) :
     ViewModel() {
@@ -24,25 +27,16 @@ class MainViewModel(private val repository: Repository = Repository(ApiClient.ap
     }
 
     private fun fetchCharacter() {
-        val client = repository.getCharacters("1")
         _charactersLiveData.postValue(ScreenState.Loading(null))
-        client.enqueue(object : Callback<CharacterResponse> {
-            override fun onResponse(
-                call: Call<CharacterResponse>,
-                response: Response<CharacterResponse>
-            ) {
-                if (response.isSuccessful) {
-                    _charactersLiveData.postValue(ScreenState.Success(response.body()?.result))
-                } else {
-                    _charactersLiveData.postValue(ScreenState.Error(response.code().toString(),null))
-                }
+        viewModelScope.launch(Dispatchers.IO) {
+            //This log shows what Thread we are running on
+            Log.d("MainViewModel", "${Thread.currentThread().name}")
+            try {
+                val client = repository.getCharacters("1")
+                _charactersLiveData.postValue(ScreenState.Success(client.result))
+            } catch(e: Exception) {
+                _charactersLiveData.postValue(ScreenState.Error(e.message.toString(), null))
             }
-
-            override fun onFailure(call: Call<CharacterResponse>, t: Throwable) {
-                //Log.d("Failure", "Repository: ${t.message.toString()}")
-                _charactersLiveData.postValue(ScreenState.Error(t.message.toString(), null))
-            }
-
-        })
+        }
     }
 }
